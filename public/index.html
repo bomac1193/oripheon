@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oripheon - Mythic AI Avatar Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1em;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #ee5a5a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+        .avatar-display h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        .avatar-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        .avatar-section h3 {
+            color: #a8daff;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 5px;
+        }
+        .avatar-section p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+        }
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin: 3px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⬡ ORIPHEON ⬡</h1>
+            <p class="subtitle">Mythic AI Avatar Generator</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card controls">
+                <h2>Generate Avatar</h2>
+                <div>
+                    <label for="seed">Seed (optional)</label>
+                    <input type="number" id="seed" placeholder="Random if empty">
+                </div>
+                <div>
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="">Random</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="androgynous">Androgynous</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="order">Order</label>
+                    <select id="order">
+                        <option value="">Random</option>
+                        <option value="angel">Angel</option>
+                        <option value="demon">Demon</option>
+                        <option value="jinn">Jinn</option>
+                        <option value="human">Human</option>
+                    </select>
+                </div>
+                <button onclick="generateAvatar()">Generate Avatar</button>
+                <button onclick="listAvatars()" style="background: #4ecdc4;">List All Avatars</button>
+            </div>
+
+            <div class="card">
+                <div id="result" class="result">
+                    <div class="loading">
+                        Click "Generate Avatar" to create your mythic character
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function generateAvatar() {
+            const seed = document.getElementById('seed').value;
+            const gender = document.getElementById('gender').value;
+            const order = document.getElementById('order').value;
+
+            const body = {};
+            if (seed) body.seed = parseInt(seed);
+            if (gender || order) {
+                if (gender) {
+                    body.identity = { gender };
+                }
+                if (order) {
+                    body.being = { order };
+                }
+            }
+
+            document.getElementById('result').innerHTML = '<div class="loading">Generating avatar...</div>';
+
+            try {
+                const response = await fetch('http://localhost:3333/avatars/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) throw new Error('Failed to generate avatar');
+
+                const avatar = await response.json();
+                displayAvatar(avatar);
+            } catch (error) {
+                document.getElementById('result').innerHTML =
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function listAvatars() {
+            document.getElementById('result').innerHTML = '<div class="loading">Loading avatars...</div>';
+
+            try {
+                const response = await fetch('http://localhost:3333/avatars?limit=10');
+                if (!response.ok) throw new Error('Failed to fetch avatars');
+
+                const data = await response.json();
+                displayAvatarList(data.items);
+            } catch (error) {
+                document.getElementById('result').innerHTML =
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayAvatar(avatar) {
+            let name = '';
+            if (avatar.identity.primaryName.mononym) {
+                name = avatar.identity.primaryName.mononym;
+            } else {
+                const parts = [];
+                if (avatar.identity.primaryName.first) parts.push(avatar.identity.primaryName.first);
+                if (avatar.identity.primaryName.middle) parts.push(avatar.identity.primaryName.middle);
+                if (avatar.identity.primaryName.last) parts.push(avatar.identity.primaryName.last);
+                name = parts.join(' ') || 'Unnamed';
+            }
+
+            const title = avatar.identity.primaryName.title ? avatar.identity.primaryName.title + ' ' : '';
+
+            const html = `
+                <div class="avatar-display">
+                    <h2>🌟 ${title}${name}</h2>
+
+                    <div class="avatar-section">
+                        <h3>Identity</h3>
+                        <p><strong>Gender:</strong> ${avatar.identity.gender}</p>
+                        <p><strong>Light Side:</strong> ${avatar.identity.pseudonyms.lightSide || 'None'}</p>
+                        <p><strong>Dark Side:</strong> ${avatar.identity.pseudonyms.darkSide || 'None'}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Being</h3>
+                        <p><strong>Order:</strong> ${avatar.being.order}</p>
+                        <p><strong>Office:</strong> ${avatar.being.office}</p>
+                        <p><strong>Tarot Archetype:</strong> ${avatar.being.tarotArchetype.replace(/_/g, ' ')}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Appearance</h3>
+                        <p><strong>Age:</strong> ${avatar.appearance.ageAppearance}</p>
+                        <p><strong>Presentation:</strong> ${avatar.appearance.presentation}</p>
+                        <p><strong>Features:</strong> ${avatar.appearance.keyFeatures.join(', ')}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Personality</h3>
+                        <p>${avatar.personality.summary}</p>
+                        <p><strong>Values:</strong> ${avatar.personality.coreValues.join(', ')}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Mythos</h3>
+                        <p><strong>${avatar.mythos.shortTitle}</strong></p>
+                        <p>${avatar.mythos.originStory}</p>
+                        <p><strong>Faction:</strong> ${avatar.mythos.faction}</p>
+                        <p><strong>Prophecy:</strong> ${avatar.mythos.prophecyOrCurse}</p>
+                        <p><strong>Ritual:</strong> ${avatar.mythos.signatureRitual}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Tastes</h3>
+                        <p><strong>Music:</strong> ${avatar.tasteProfile.music.join(', ')}</p>
+                        <p><strong>Fashion:</strong> ${avatar.tasteProfile.fashion.join(', ')}</p>
+                        <p><strong>Likes:</strong> ${avatar.tasteProfile.likes.join(', ')}</p>
+                        <p><strong>Dislikes:</strong> ${avatar.tasteProfile.dislikes.join(', ')}</p>
+                    </div>
+
+                    <div class="avatar-section">
+                        <h3>Export Options</h3>
+                        <button onclick="exportTo('${avatar.id}', 'inworld')">Export to Inworld</button>
+                        <button onclick="exportTo('${avatar.id}', 'convai')" style="background: #4ecdc4;">Export to Convai</button>
+                        <button onclick="exportTo('${avatar.id}', 'charisma')" style="background: #f39c12;">Export to Charisma</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('result').innerHTML = html;
+        }
+
+        function displayAvatarList(avatars) {
+            if (avatars.length === 0) {
+                document.getElementById('result').innerHTML = '<div class="loading">No avatars found. Generate one!</div>';
+                return;
+            }
+
+            const html = avatars.map(avatar => {
+                let name = '';
+                if (avatar.identity.primaryName.mononym) {
+                    name = avatar.identity.primaryName.mononym;
+                } else {
+                    const parts = [];
+                    if (avatar.identity.primaryName.first) parts.push(avatar.identity.primaryName.first);
+                    if (avatar.identity.primaryName.middle) parts.push(avatar.identity.primaryName.middle);
+                    if (avatar.identity.primaryName.last) parts.push(avatar.identity.primaryName.last);
+                    name = parts.join(' ') || 'Unnamed';
+                }
+                const title = avatar.identity.primaryName.title ? avatar.identity.primaryName.title + ' ' : '';
+                const fullName = title + name;
+                return `
+                    <div class="avatar-section" style="cursor: pointer;" onclick='displayAvatar(${JSON.stringify(avatar).replace(/'/g, "\\'")})''>
+                        <h3>${fullName}</h3>
+                        <p>${avatar.mythos.shortTitle}</p>
+                        <div>
+                            <span class="badge">${avatar.being.order}</span>
+                            <span class="badge">${avatar.being.office}</span>
+                            <span class="badge">${avatar.identity.gender}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('result').innerHTML = `
+                <h2>Saved Avatars (Click to view)</h2>
+                ${html}
+            `;
+        }
+
+        async function exportTo(id, platform) {
+            try {
+                const response = await fetch(`http://localhost:3333/avatars/${id}/${platform}`);
+                if (!response.ok) throw new Error('Export failed');
+
+                const data = await response.json();
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `avatar-${platform}-${id}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                alert(`Avatar exported to ${platform} format!`);
+            } catch (error) {
+                alert(`Export error: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
