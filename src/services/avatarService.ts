@@ -59,12 +59,17 @@ export class AvatarService {
   ): AvatarCore {
     const randomizer = Randomizer.fromSeed(seed, this.nameGenerator);
     const heritage = params.heritage ?? randomizer.randomHeritage();
-    const identity = randomizer.randomIdentity(
+    let identity = randomizer.randomIdentity(
       heritage,
       params.identity,
       params.needPseudonyms ?? true
     );
     const being = randomizer.randomBeing(params.being ?? {});
+
+    // Generate name meaning after we have heritage and being
+    const nameMeaning = randomizer.generateNameMeaning(heritage, being);
+    identity = { ...identity, nameMeaning };
+
     const appearance = randomizer.randomAppearance();
     const personality = randomizer.randomPersonality();
     const mythos = randomizer.randomMythos(being, heritage);

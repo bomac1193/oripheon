@@ -46,7 +46,7 @@ export type TarotArchetype =
   | "judgement"
   | "world";
 
-export type NameMode = "mononym" | "first_last" | "first_middle_last";
+export type NameMode = "mononym" | "first_last" | "first_middle_last" | "fused_mononym";
 
 export interface PrimaryName {
   title: string | null;
@@ -66,6 +66,7 @@ export interface Identity {
   primaryName: PrimaryName;
   pseudonyms: Pseudonyms;
   gender: Gender;
+  nameMeaning: string;
 }
 
 export interface Being {

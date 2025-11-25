@@ -28,6 +28,7 @@ const NAME_MODES: PrimaryName["nameMode"][] = [
   "mononym",
   "first_last",
   "first_middle_last",
+  "fused_mononym",
 ];
 const TITLES = [
   null,
@@ -251,6 +252,23 @@ export class Randomizer {
         heritage,
         this.rng
       );
+    } else if (nameMode === "fused_mononym") {
+      // Generate full name parts first
+      const first = this.nameGenerator.generateGivenName(
+        gender,
+        heritage,
+        this.rng
+      );
+      const last = this.nameGenerator.generateSurname(
+        gender,
+        heritage,
+        this.rng
+      );
+      // Fuse title and name parts together
+      const parts = [];
+      if (title) parts.push(title);
+      parts.push(first, last);
+      primaryName.mononym = fuseNameParts(parts);
     } else {
       primaryName.first = this.nameGenerator.generateGivenName(
         gender,
@@ -284,6 +302,7 @@ export class Randomizer {
       primaryName,
       pseudonyms,
       gender,
+      nameMeaning: "", // Will be filled in later after being is generated
     };
   }
 
@@ -386,6 +405,10 @@ export class Randomizer {
       dislikes: shuffle(this.rng, TASTE_DISLIKES).slice(0, 2),
     };
   }
+
+  generateNameMeaning(heritage: Heritage, being: Being): string {
+    return generateNameMeaning("", heritage, being, this.rng);
+  }
 }
 
 export function describeHeritage(heritage: Heritage): string {
@@ -396,4 +419,176 @@ export function describeHeritage(heritage: Heritage): string {
     return names[0]!;
   }
   return `${names.slice(0, -1).join(", ")} and ${names.slice(-1)[0]}`;
+}
+
+export function generateNameMeaning(
+  name: string,
+  heritage: Heritage,
+  being: Being,
+  rng: RNG
+): string {
+  const primaryCulture = heritage.components[0]?.culture || "caucasian_european";
+
+  const meaningPrefixes: Record<HeritageCulture, string[]> = {
+    african_yoruba: ["child of", "gift of", "crowned by", "blessed with"],
+    african_igbo: ["child of", "gift from", "protected by", "born with"],
+    arabic: ["servant of", "gift of", "light of", "guided by"],
+    caucasian_european: ["bearer of", "keeper of", "holder of", "one with"],
+    celtic: ["child of", "born of", "marked by", "blessed with"],
+    norse_viking: ["son/daughter of", "warrior of", "bearer of", "chosen by"],
+  };
+
+  const meaningSuffixes = [
+    "wisdom", "strength", "honor", "light", "shadows", "storms",
+    "grace", "fire", "water", "earth", "destiny", "prophecy",
+    "justice", "mercy", "courage", "vision", "truth", "power"
+  ];
+
+  const orderThemes: Record<typeof being.order, string[]> = {
+    angel: ["divine light", "celestial grace", "heavenly wisdom", "sacred duty"],
+    demon: ["hidden truth", "forbidden knowledge", "dark power", "inner strength"],
+    jinn: ["elemental force", "mystical energy", "shifting sands", "eternal flame"],
+    human: ["mortal courage", "earthly wisdom", "steadfast resolve", "human spirit"],
+  };
+
+  const prefix = randomChoice(rng, meaningPrefixes[primaryCulture]);
+  const theme = randomChoice(rng, orderThemes[being.order]);
+  const suffix = randomChoice(rng, meaningSuffixes);
+
+  const meanings = [
+    `"${prefix} ${suffix}"`,
+    `"${theme}"`,
+    `"${prefix} ${theme}"`,
+    `"one who carries ${suffix}"`,
+  ];
+
+  return randomChoice(rng, meanings);
+}
+
+function fuseNameParts(parts: string[]): string {
+  if (parts.length === 0) return "Nameless";
+  if (parts.length === 1) return parts[0]!;
+
+  // Clean and lowercase parts
+  const cleaned = parts.map(p => p.toLowerCase().replace(/[^a-z]/g, ''));
+  const vowels = new Set(['a', 'e', 'i', 'o', 'u', 'y']);
+
+  // Find syllable-like chunks (consonant cluster + vowel(s))
+  function extractSyllables(word: string): string[] {
+    const syllables: string[] = [];
+    let current = '';
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i]!;
+      current += char;
+
+      // If we hit a vowel and next is consonant (or end), that's a syllable
+      if (vowels.has(char)) {
+        if (i === word.length - 1 || !vowels.has(word[i + 1]!)) {
+          syllables.push(current);
+          current = '';
+        }
+      }
+    }
+
+    if (current) syllables.push(current);
+    return syllables.filter(s => s.length > 0);
+  }
+
+  // Different fusion strategies that maintain pronounceability
+  const strategies = [
+    // First syllable(s) of first + last syllable(s) of last
+    () => {
+      const first = cleaned[0]!;
+      const last = cleaned[cleaned.length - 1]!;
+      const firstSyllables = extractSyllables(first);
+      const lastSyllables = extractSyllables(last);
+
+      if (firstSyllables.length === 0 || lastSyllables.length === 0) {
+        return first.slice(0, 3) + last.slice(-3);
+      }
+
+      // Take first 1-2 syllables of first word
+      const firstPart = firstSyllables.slice(0, Math.min(2, firstSyllables.length)).join('');
+      // Take last 1-2 syllables of last word
+      const lastPart = lastSyllables.slice(-Math.min(2, lastSyllables.length)).join('');
+
+      return firstPart + lastPart;
+    },
+
+    // Blend at vowel boundary
+    () => {
+      const first = cleaned[0]!;
+      const last = cleaned[cleaned.length - 1]!;
+
+      // Find last vowel in first word
+      let splitPoint = first.length;
+      for (let i = first.length - 1; i >= 0; i--) {
+        if (vowels.has(first[i]!)) {
+          splitPoint = i + 1;
+          break;
+        }
+      }
+
+      // Find first vowel in last word
+      let startPoint = 0;
+      for (let i = 0; i < last.length; i++) {
+        if (vowels.has(last[i]!)) {
+          startPoint = i;
+          break;
+        }
+      }
+
+      return first.slice(0, splitPoint) + last.slice(startPoint);
+    },
+
+    // Portmanteau style - overlap common sounds
+    () => {
+      const first = cleaned[0]!;
+      const last = cleaned[cleaned.length - 1]!;
+
+      // Try to find overlap
+      for (let len = Math.min(3, first.length, last.length); len > 0; len--) {
+        const ending = first.slice(-len);
+        const beginning = last.slice(0, len);
+        if (ending === beginning) {
+          return first + last.slice(len);
+        }
+      }
+
+      // No overlap, just take 2/3 of each
+      const cutFirst = Math.ceil(first.length * 0.6);
+      const cutLast = Math.floor(last.length * 0.4);
+      return first.slice(0, cutFirst) + last.slice(-cutLast);
+    },
+
+    // Simple clean blend
+    () => {
+      const first = cleaned[0]!;
+      const last = cleaned[cleaned.length - 1]!;
+
+      // Take most of first, end of last
+      const firstPart = first.slice(0, Math.min(4, Math.ceil(first.length * 0.7)));
+      const lastPart = last.slice(-Math.min(3, Math.ceil(last.length * 0.5)));
+
+      return firstPart + lastPart;
+    },
+  ];
+
+  // Pick a random strategy
+  const strategy = strategies[Math.floor(Math.random() * strategies.length)]!;
+  let fused = strategy();
+
+  // Ensure it's not too long
+  if (fused.length > 10) {
+    fused = fused.slice(0, 10);
+  }
+
+  // Ensure it's not too short
+  if (fused.length < 3) {
+    fused = cleaned.join('').slice(0, 6);
+  }
+
+  // Capitalize first letter
+  return fused.charAt(0).toUpperCase() + fused.slice(1);
 }
