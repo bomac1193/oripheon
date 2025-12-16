@@ -2,9 +2,17 @@ import {
   Gender,
   Heritage,
   HeritageCulture,
+  OrderType,
+  TarotArchetype,
 } from "../../models/avatar.js";
-import { RNG, weightedRandomChoice } from "../../utils/prng.js";
+import { RNG, randomChoice, weightedRandomChoice } from "../../utils/prng.js";
 import { NameGenerator } from "./nameGenerator.js";
+import {
+  getOrderNames,
+  getOrderSurnames,
+  getOrderMononyms,
+} from "./orderAlignedNames.js";
+import { getTarotMononyms, getTarotNames, getTarotSurnames } from "./tarotAlignedNames.js";
 
 type NameBuckets = {
   male: string[];
@@ -90,26 +98,161 @@ function pickSurnameFromBucket(buckets: NameBuckets, rng: RNG): string {
   return buckets.surnames[Math.floor(rng() * buckets.surnames.length)];
 }
 
+type NameSource = "order" | "tarot" | "culture";
+
+function safePick(rng: RNG, list: string[]): string | null {
+  if (!list.length) return null;
+  return randomChoice(rng, list);
+}
+
 export class InMemoryNameGenerator implements NameGenerator {
-  generateGivenName(gender: Gender, heritage: Heritage, rng: RNG): string {
+  generateGivenName(
+    gender: Gender,
+    heritage: Heritage,
+    rng: RNG,
+    order?: OrderType,
+    tarotArchetype?: TarotArchetype
+  ): string {
     const culture = pickCulture(rng, heritage);
     const buckets = CULTURE_NAME_DATA[culture];
+
+    const isHuman = order === "human";
+    const sources: Array<{ item: NameSource; weight: number }> = [];
+    if (order && tarotArchetype) {
+      sources.push({ item: "order", weight: isHuman ? 45 : 55 });
+      sources.push({ item: "tarot", weight: isHuman ? 35 : 40 });
+      sources.push({ item: "culture", weight: isHuman ? 20 : 5 });
+    } else if (order) {
+      sources.push({ item: "order", weight: isHuman ? 60 : 90 });
+      sources.push({ item: "culture", weight: isHuman ? 40 : 10 });
+    } else if (tarotArchetype) {
+      sources.push({ item: "tarot", weight: 75 });
+      sources.push({ item: "culture", weight: 25 });
+    } else {
+      sources.push({ item: "culture", weight: 100 });
+    }
+
+    const pickers: Record<NameSource, () => string | null> = {
+      order: () => (order ? safePick(rng, getOrderNames(order, gender)) : null),
+      tarot: () =>
+        tarotArchetype ? safePick(rng, getTarotNames(tarotArchetype, gender)) : null,
+      culture: () => pickNameFromBucket(gender, buckets, rng),
+    };
+
+    const chosen = weightedRandomChoice(rng, sources);
+    const attemptOrder: NameSource[] = [chosen, "order", "tarot", "culture"].filter(
+      (value, index, array) => array.indexOf(value) === index
+    ) as NameSource[];
+    for (const source of attemptOrder) {
+      const value = pickers[source]();
+      if (value) return value;
+    }
+
     return pickNameFromBucket(gender, buckets, rng);
   }
 
-  generateSurname(gender: Gender, heritage: Heritage, rng: RNG): string {
+  generateSurname(
+    gender: Gender,
+    heritage: Heritage,
+    rng: RNG,
+    order?: OrderType,
+    tarotArchetype?: TarotArchetype
+  ): string {
     const culture = pickCulture(rng, heritage);
     const buckets = CULTURE_NAME_DATA[culture];
+
+    const isHuman = order === "human";
+    const sources: Array<{ item: NameSource; weight: number }> = [];
+    if (order && tarotArchetype) {
+      sources.push({ item: "order", weight: isHuman ? 40 : 50 });
+      sources.push({ item: "tarot", weight: isHuman ? 35 : 45 });
+      sources.push({ item: "culture", weight: isHuman ? 25 : 5 });
+    } else if (order) {
+      sources.push({ item: "order", weight: isHuman ? 50 : 85 });
+      sources.push({ item: "culture", weight: isHuman ? 50 : 15 });
+    } else if (tarotArchetype) {
+      sources.push({ item: "tarot", weight: 60 });
+      sources.push({ item: "culture", weight: 40 });
+    } else {
+      sources.push({ item: "culture", weight: 100 });
+    }
+
+    const pickers: Record<NameSource, () => string | null> = {
+      order: () => (order ? safePick(rng, getOrderSurnames(order)) : null),
+      tarot: () => (tarotArchetype ? safePick(rng, getTarotSurnames(tarotArchetype)) : null),
+      culture: () => pickSurnameFromBucket(buckets, rng),
+    };
+
+    const chosen = weightedRandomChoice(rng, sources);
+    const attemptOrder: NameSource[] = [chosen, "order", "tarot", "culture"].filter(
+      (value, index, array) => array.indexOf(value) === index
+    ) as NameSource[];
+    for (const source of attemptOrder) {
+      const value = pickers[source]();
+      if (value) return value;
+    }
+
     return pickSurnameFromBucket(buckets, rng);
   }
 
-  generateMononym(gender: Gender, heritage: Heritage, rng: RNG): string {
+  generateMononym(
+    gender: Gender,
+    heritage: Heritage,
+    rng: RNG,
+    order?: OrderType,
+    tarotArchetype?: TarotArchetype
+  ): string {
     const culture = pickCulture(rng, heritage);
     const buckets = CULTURE_NAME_DATA[culture];
-    const pool = [
-      ...(buckets.mononyms ?? []),
-      pickNameFromBucket(gender, buckets, rng),
-    ];
-    return pool[Math.floor(rng() * pool.length)];
+
+    const isHuman = order === "human";
+    const sources: Array<{ item: NameSource; weight: number }> = [];
+    if (order && tarotArchetype) {
+      sources.push({ item: "order", weight: isHuman ? 45 : 55 });
+      sources.push({ item: "tarot", weight: isHuman ? 45 : 40 });
+      sources.push({ item: "culture", weight: isHuman ? 10 : 5 });
+    } else if (order) {
+      sources.push({ item: "order", weight: isHuman ? 70 : 95 });
+      sources.push({ item: "culture", weight: isHuman ? 30 : 5 });
+    } else if (tarotArchetype) {
+      sources.push({ item: "tarot", weight: 80 });
+      sources.push({ item: "culture", weight: 20 });
+    } else {
+      sources.push({ item: "culture", weight: 100 });
+    }
+
+    const pickers: Record<NameSource, () => string | null> = {
+      order: () => {
+        if (!order) return null;
+        const orderMononyms = getOrderMononyms(order);
+        if (orderMononyms.length > 0) return safePick(rng, orderMononyms);
+        return safePick(rng, getOrderNames(order, gender));
+      },
+      tarot: () => {
+        if (!tarotArchetype) return null;
+        const tarotMononyms = getTarotMononyms(tarotArchetype);
+        if (tarotMononyms.length > 0) return safePick(rng, tarotMononyms);
+        return safePick(rng, getTarotNames(tarotArchetype, gender));
+      },
+      culture: () => {
+        const cultureMononyms = buckets.mononyms ?? [];
+        if (cultureMononyms.length > 0 && rng() < 0.7) {
+          const picked = safePick(rng, cultureMononyms);
+          if (picked) return picked;
+        }
+        return pickNameFromBucket(gender, buckets, rng);
+      },
+    };
+
+    const chosen = weightedRandomChoice(rng, sources);
+    const attemptOrder: NameSource[] = [chosen, "order", "tarot", "culture"].filter(
+      (value, index, array) => array.indexOf(value) === index
+    ) as NameSource[];
+    for (const source of attemptOrder) {
+      const value = pickers[source]();
+      if (value) return value;
+    }
+
+    return pickNameFromBucket(gender, buckets, rng);
   }
 }

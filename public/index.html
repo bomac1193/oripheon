@@ -13,7 +13,8 @@
             --ultraviolet: #bf40bf;
             --glow-blue: #00f0ff;
             --chromium: #c0c0d0;
-            --temple-gradient: linear-gradient(135deg, var(--obsidian) 0%, var(--deep-purple) 50%, var(--cosmic-purple) 100%);
+            --panel-bg: rgba(10, 10, 15, 0.8);
+            --border-gold: rgba(212, 175, 55, 0.3);
         }
 
         * {
@@ -24,47 +25,30 @@
 
         @keyframes particleDrift {
             0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
             100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
         }
 
         @keyframes sigilPulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.02); }
+            0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1.05) rotate(180deg); }
         }
 
         @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(191, 64, 191, 0.3), 0 0 40px rgba(191, 64, 191, 0.1); }
-            50% { box-shadow: 0 0 30px rgba(191, 64, 191, 0.6), 0 0 60px rgba(191, 64, 191, 0.2); }
-        }
-
-        @keyframes revealPanel {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes orbitalGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0%, 100% { box-shadow: 0 0 15px rgba(191, 64, 191, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(191, 64, 191, 0.4); }
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--temple-gradient);
+            background: linear-gradient(135deg, var(--obsidian) 0%, var(--deep-purple) 50%, var(--cosmic-purple) 100%);
             color: var(--chromium);
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
             position: relative;
         }
 
-        /* Particle system */
         .particle-field {
             position: fixed;
             top: 0;
@@ -77,444 +61,481 @@
 
         .particle {
             position: absolute;
-            width: 2px;
-            height: 2px;
+            width: 1px;
+            height: 1px;
             background: var(--gold);
             border-radius: 50%;
             animation: particleDrift linear infinite;
             opacity: 0;
         }
 
-        /* Main container */
-        .temple-container {
+        /* Main Dashboard Layout */
+        .dashboard {
+            display: flex;
+            height: 100vh;
             position: relative;
             z-index: 10;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 40px 20px;
         }
 
-        /* Sigil Gate - Landing */
-        .sigil-gate {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            animation: revealPanel 1.2s ease-out;
-        }
-
-        .oripheon-sigil {
-            width: 200px;
-            height: 200px;
-            position: relative;
-            margin-bottom: 60px;
-            animation: sigilPulse 4s ease-in-out infinite;
-        }
-
-        .sigil-ring {
-            position: absolute;
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            opacity: 0.6;
-        }
-
-        .sigil-ring:nth-child(1) {
-            width: 200px;
-            height: 200px;
+        /* Header Bar */
+        .header-bar {
+            position: fixed;
             top: 0;
             left: 0;
-        }
-
-        .sigil-ring:nth-child(2) {
-            width: 140px;
-            height: 140px;
-            top: 30px;
-            left: 30px;
-            border-color: var(--ultraviolet);
-        }
-
-        .sigil-ring:nth-child(3) {
-            width: 80px;
-            height: 80px;
-            top: 60px;
-            left: 60px;
-            border-color: var(--glow-blue);
-        }
-
-        .sigil-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            color: var(--gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
-        }
-
-        .temple-title {
-            font-size: 72px;
-            font-weight: 100;
-            letter-spacing: 12px;
-            color: var(--gold);
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-            font-family: 'Cinzel', serif;
-        }
-
-        .temple-subtitle {
-            font-size: 18px;
-            letter-spacing: 6px;
-            color: var(--ultraviolet);
-            margin-bottom: 60px;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
-
-        /* Divine Panels */
-        .divine-panel {
-            background: rgba(10, 10, 15, 0.7);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 2px;
-            padding: 40px;
-            margin: 40px 0;
-            position: relative;
+            right: 0;
+            height: 50px;
+            background: rgba(10, 10, 15, 0.95);
+            border-bottom: 1px solid var(--border-gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
             backdrop-filter: blur(10px);
-            animation: revealPanel 0.8s ease-out;
         }
 
-        .divine-panel::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            background: linear-gradient(45deg, var(--gold), var(--ultraviolet), var(--glow-blue), var(--gold));
-            background-size: 300% 300%;
-            border-radius: 2px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .divine-panel:hover::before {
-            opacity: 0.2;
-        }
-
-        .panel-header {
-            font-size: 28px;
-            font-weight: 300;
+        .header-title {
+            font-size: 18px;
+            font-family: 'Cinzel', serif;
             letter-spacing: 4px;
             color: var(--gold);
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .panel-sigil {
-            font-size: 32px;
-            opacity: 0.6;
-        }
-
-        /* Ritual Grid */
-        .ritual-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        /* Ritual Selectors */
-        .ritual-field {
-            margin-bottom: 25px;
-        }
-
-        .ritual-label {
-            display: block;
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: var(--ultraviolet);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .ritual-input,
-        .ritual-select {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(191, 64, 191, 0.3);
-            color: var(--chromium);
-            padding: 14px 18px;
-            font-size: 15px;
-            border-radius: 2px;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .ritual-input:focus,
-        .ritual-select:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .ritual-input::placeholder {
-            color: rgba(192, 192, 208, 0.4);
-            font-style: italic;
-        }
-
-        /* Sigil Buttons */
-        .sigil-button {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(191, 64, 191, 0.2) 0%, rgba(212, 175, 55, 0.2) 100%);
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 18px 32px;
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s;
-            font-weight: 600;
-            border-radius: 2px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .sigil-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .sigil-button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .sigil-button:hover {
-            border-color: var(--ultraviolet);
-            color: var(--glow-blue);
-            box-shadow: 0 0 30px rgba(191, 64, 191, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .sigil-button:active {
-            transform: translateY(0);
-        }
-
-        .sigil-button span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .sigil-button.secondary {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(45, 27, 78, 0.2) 100%);
-            border-color: var(--glow-blue);
-            color: var(--glow-blue);
-        }
-
-        .sigil-button.secondary:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        /* Forge Container */
-        .forge-container {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(191, 64, 191, 0.3);
-            border-radius: 2px;
-            padding: 30px;
-            min-height: 400px;
-            position: relative;
-            animation: glowPulse 3s ease-in-out infinite;
-        }
-
-        .forge-loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 400px;
-            color: var(--ultraviolet);
-        }
-
-        .forge-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(191, 64, 191, 0.2);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: orbitalGlow 1.5s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        /* Avatar Display */
-        .avatar-manifestation {
-            animation: revealPanel 0.6s ease-out;
-        }
-
-        .avatar-name {
-            font-size: 42px;
-            font-weight: 300;
-            color: var(--gold);
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            text-align: center;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-        }
-
-        .avatar-title-text {
-            font-size: 20px;
-            color: var(--ultraviolet);
-            text-align: center;
-            margin-bottom: 40px;
-            font-style: italic;
-            opacity: 0.9;
-        }
-
-        .avatar-section {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: rgba(45, 27, 78, 0.2);
-            border-left: 2px solid var(--gold);
-            border-radius: 2px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            letter-spacing: 3px;
-            color: var(--glow-blue);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
+        .header-sigil {
+            font-size: 20px;
+            animation: sigilPulse 4s ease-in-out infinite;
+        }
+
+        .header-subtitle {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--ultraviolet);
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* Left Sidebar - Controls */
+        .control-panel {
+            width: 380px;
+            height: 100vh;
+            padding-top: 50px;
+            background: rgba(10, 10, 15, 0.6);
+            border-right: 1px solid var(--border-gold);
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .section-header {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
         .section-icon {
+            font-size: 14px;
             opacity: 0.6;
         }
 
-        .section-content {
-            color: var(--chromium);
-            line-height: 1.8;
-            font-size: 15px;
+        .control-field {
+            margin-bottom: 12px;
         }
 
-        .section-content p {
-            margin: 8px 0;
-        }
-
-        .section-content strong {
-            color: var(--gold);
-            font-weight: 600;
-            margin-right: 8px;
-        }
-
-        .section-content em {
+        .control-label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 1px;
             color: var(--ultraviolet);
-            font-style: italic;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
         }
 
-        .badge {
-            display: inline-block;
-            background: rgba(191, 64, 191, 0.2);
-            border: 1px solid rgba(191, 64, 191, 0.4);
-            padding: 4px 12px;
-            border-radius: 2px;
-            margin: 4px;
+        .control-input,
+        .control-select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(191, 64, 191, 0.3);
+            color: var(--chromium);
+            padding: 8px 12px;
             font-size: 13px;
+            border-radius: 2px;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        textarea.control-input {
+            min-height: 70px;
+            resize: vertical;
+        }
+
+        .control-input:focus,
+        .control-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .control-input::placeholder {
+            color: rgba(192, 192, 208, 0.3);
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        /* Checkbox Control */
+        .control-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .control-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 11px;
             letter-spacing: 1px;
             color: var(--chromium);
-        }
-
-        /* Codex of Souls */
-        .soul-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .soul-card {
-            background: rgba(10, 10, 15, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 25px;
-            border-radius: 2px;
             cursor: pointer;
-            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .control-slider {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-slider input[type="range"] {
+            width: 100%;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .control-slider input[type="range"]:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slider-value {
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .slider-value.disabled {
+            opacity: 0.35;
+        }
+
+        .control-hint {
+            font-size: 10px;
+            color: rgba(192, 192, 208, 0.55);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(191, 64, 191, 0.2) 0%, rgba(212, 175, 55, 0.2) 100%);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 20px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s;
+            font-weight: 600;
+            border-radius: 2px;
         }
 
-        .soul-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-            transition: left 0.5s;
+        .action-btn:hover {
+            border-color: var(--ultraviolet);
+            color: var(--glow-blue);
+            box-shadow: 0 0 20px rgba(191, 64, 191, 0.3);
+            transform: translateY(-1px);
         }
 
-        .soul-card:hover::before {
-            left: 100%;
+        .action-btn.secondary {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(45, 27, 78, 0.2) 100%);
+            border-color: var(--glow-blue);
+            color: var(--glow-blue);
         }
 
-        .soul-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(191, 64, 191, 0.3);
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            padding-top: 50px;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .soul-name {
-            font-size: 20px;
-            color: var(--gold);
-            margin-bottom: 8px;
-            font-weight: 500;
+        .forge-container {
+            padding: 20px;
+            min-height: calc(100vh - 50px);
         }
 
-        .soul-title {
-            font-size: 14px;
+        /* Loading State */
+        .forge-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
             color: var(--ultraviolet);
+        }
+
+        .forge-spinner {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(191, 64, 191, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: sigilPulse 1.5s linear infinite;
             margin-bottom: 15px;
+        }
+
+        /* Avatar Display - Compact */
+        .avatar-manifestation {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar-header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: 2px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-name {
+            font-size: 32px;
+            font-weight: 300;
+            color: var(--gold);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .avatar-title-text {
+            font-size: 16px;
+            color: var(--ultraviolet);
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Tabbed Interface */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-gold);
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: var(--chromium);
+            padding: 8px 16px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            opacity: 0.5;
+        }
+
+        .tab:hover {
+            opacity: 0.8;
+            color: var(--gold);
+        }
+
+        .tab.active {
+            opacity: 1;
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Compact Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-gold);
+            padding: 15px;
+            border-radius: 2px;
+            border-left: 2px solid var(--gold);
+        }
+
+        .card-title {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--glow-blue);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-content {
+            color: var(--chromium);
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .card-content p {
+            margin: 5px 0;
+        }
+
+        .card-content strong {
+            color: var(--gold);
+            font-weight: 600;
+            margin-right: 6px;
+            font-size: 11px;
+        }
+
+        .card-content em {
+            color: var(--ultraviolet);
             font-style: italic;
         }
 
-        /* Export Section */
-        .export-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+	        .badge {
+	            display: inline-block;
+	            background: rgba(191, 64, 191, 0.2);
+	            border: 1px solid rgba(191, 64, 191, 0.4);
+	            padding: 3px 8px;
+	            border-radius: 2px;
+	            margin: 3px;
+	            font-size: 11px;
+	            letter-spacing: 1px;
+	            color: var(--chromium);
+	        }
+
+	        .chip-row {
+	            display: flex;
+	            flex-wrap: wrap;
+	            gap: 6px;
+	            margin-top: 8px;
+	        }
+
+	        .chip {
+	            display: inline-flex;
+	            align-items: center;
+	            gap: 6px;
+	            background: rgba(191, 64, 191, 0.16);
+	            border: 1px solid rgba(191, 64, 191, 0.35);
+	            padding: 4px 10px;
+	            border-radius: 2px;
+	            font-size: 11px;
+	            letter-spacing: 1px;
+	            color: var(--chromium);
+	            cursor: pointer;
+	            transition: all 0.2s;
+	        }
+
+	        .chip:hover {
+	            border-color: rgba(0, 240, 255, 0.6);
+	            box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+	        }
+
+	        .chip.secondary {
+	            background: rgba(0, 240, 255, 0.08);
+	            border-color: rgba(0, 240, 255, 0.25);
+	        }
+
+	        /* Full-width sections for narrative content */
+	        .narrative-section {
+	            background: var(--panel-bg);
+            border: 1px solid var(--border-gold);
+            padding: 15px;
+            border-radius: 2px;
+            margin-bottom: 15px;
         }
 
-        .export-button {
+        .narrative-title {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--glow-blue);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .narrative-text {
+            color: var(--chromium);
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        /* Export buttons */
+        .export-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .export-btn {
+            flex: 1;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--glow-blue);
             color: var(--glow-blue);
-            padding: 12px 20px;
-            font-size: 12px;
-            letter-spacing: 2px;
+            padding: 10px 16px;
+            font-size: 10px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s;
@@ -522,36 +543,50 @@
             font-weight: 600;
         }
 
-        .export-button:hover {
+        .export-btn:hover {
             background: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
         }
 
-        /* Hidden state */
-        .hidden {
-            display: none;
+        /* Codex Grid */
+        .codex-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .temple-title {
-                font-size: 42px;
-                letter-spacing: 6px;
-            }
-
-            .ritual-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .panel-header {
-                font-size: 22px;
-            }
+        .soul-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-gold);
+            padding: 15px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        /* Custom scrollbar */
+        .soul-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(191, 64, 191, 0.3);
+        }
+
+        .soul-name {
+            font-size: 16px;
+            color: var(--gold);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .soul-title {
+            font-size: 12px;
+            color: var(--ultraviolet);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -560,11 +595,30 @@
 
         ::-webkit-scrollbar-thumb {
             background: var(--gold);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--ultraviolet);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .control-panel {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                border-right: none;
+                border-bottom: 1px solid var(--border-gold);
+            }
+
+            .main-content {
+                height: 60vh;
+            }
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -575,99 +629,239 @@
     <!-- Particle Field -->
     <div class="particle-field" id="particleField"></div>
 
-    <!-- Main Temple Container -->
-    <div class="temple-container">
-        <!-- Sigil Gate (Landing) -->
-        <div class="sigil-gate" id="sigilGate">
-            <div class="oripheon-sigil">
-                <div class="sigil-ring"></div>
-                <div class="sigil-ring"></div>
-                <div class="sigil-ring"></div>
-                <div class="sigil-center">⬡</div>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="header-title">
+            <span class="header-sigil">⬡</span>
+            <span>ORIPHEON</span>
+        </div>
+        <div class="header-subtitle">Divine Identity Engine</div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard">
+        <!-- Left Control Panel -->
+        <div class="control-panel">
+            <!-- Chamber of Identity -->
+            <div class="control-section">
+                <div class="section-header">
+                    <span class="section-icon">◈</span>
+                    Identity
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Seed</label>
+                    <input type="number" id="seed" class="control-input" placeholder="Random">
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Gender</label>
+                    <select id="gender" class="control-select">
+                        <option value="">Random</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="androgynous">Androgynous</option>
+                    </select>
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Name Mode</label>
+                    <select id="nameMode" class="control-select">
+                        <option value="">Random</option>
+                        <option value="mononym">Mononym</option>
+                        <option value="fused_mononym">Fused Mononym</option>
+                        <option value="first_last">First & Last</option>
+                        <option value="first_middle_last">First, Middle & Last</option>
+                    </select>
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Name Length</label>
+                    <div class="control-slider">
+                        <input type="range" id="nameLength" min="0" max="2" step="1" value="1">
+                        <span class="slider-value" id="nameLengthValue">Dynamic</span>
+                    </div>
+                    <p class="control-hint">Slide toward short for mononyms/fused sigils or long for full ceremonial triads.</p>
+                </div>
+	                <div class="control-checkbox">
+	                    <input type="checkbox" id="clashNamesToggle">
+	                    <label class="checkbox-label" for="clashNamesToggle">◇ Forge Clown/Troll Anachronisms</label>
+	                </div>
+	            </div>
+
+	            <!-- Divine Parameters -->
+		            <div class="control-section">
+		                <div class="section-header">
+		                    <span class="section-icon">◆</span>
+		                    Office
+		                </div>
+		                <div class="control-field">
+		                    <label class="control-label">◇ Order</label>
+		                    <select id="order" class="control-select">
+		                        <option value="">Random</option>
+	                        <option value="angel">Angel</option>
+	                        <option value="demon">Demon</option>
+	                        <option value="jinn">Jinn</option>
+	                        <option value="human">Human</option>
+	                        <option value="titan">Titan</option>
+	                        <option value="fae">Fae</option>
+	                        <option value="yokai">Yokai</option>
+	                        <option value="elemental">Elemental</option>
+	                        <option value="nephilim">Nephilim</option>
+	                        <option value="archon">Archon</option>
+	                        <option value="dragonkin">Dragonkin</option>
+	                        <option value="construct">Construct</option>
+	                        <option value="eldritch">Eldritch</option>
+		                        <option value="trickster">Clown / Troll Trickster</option>
+		                    </select>
+		                </div>
+
+		                <div class="control-field">
+			                    <label class="control-label">◇ Path</label>
+			                    <select id="tarotPath" class="control-select">
+			                        <option value="">Random</option>
+			                        <option value="magician">Magician</option>
+			                        <option value="high_priestess">High Priestess</option>
+			                        <option value="empress">Empress</option>
+			                        <option value="emperor">Emperor</option>
+			                        <option value="hierophant">Hierophant</option>
+			                        <option value="lovers">Lovers</option>
+			                        <option value="chariot">Chariot</option>
+		                        <option value="strength">Strength</option>
+		                        <option value="hermit">Hermit</option>
+		                        <option value="wheel_of_fortune">Wheel of Fortune</option>
+		                        <option value="justice">Justice</option>
+		                        <option value="hanged_man">Hanged Man</option>
+		                        <option value="death">Death</option>
+		                        <option value="temperance">Temperance</option>
+		                        <option value="devil">Devil</option>
+		                        <option value="tower">Tower</option>
+		                        <option value="star">Star</option>
+		                        <option value="moon">Moon</option>
+		                        <option value="sun">Sun</option>
+		                        <option value="judgement">Judgement</option>
+		                        <option value="world">World</option>
+		                    </select>
+		                    <p class="control-hint">Locks the tarot path; also feeds trait/skill suggestions.</p>
+		                </div>
+
+		                <div class="control-field">
+		                    <label class="control-label">◇ Archetype</label>
+		                    <select id="nameArchetype" class="control-select" disabled>
+		                        <option value="">Select...</option>
+	                    </select>
+	                    <p class="control-hint">Pick an archetype to unlock trait suggestions.</p>
+	                </div>
+
+	                <div class="control-field">
+	                    <label class="control-label">◇ Traits (max 3)</label>
+	                    <div id="nameTraitSuggestions" class="chip-row"></div>
+	                    <div id="nameTraitsSelected" class="chip-row"></div>
+	                    <input
+	                        type="text"
+	                        id="traitSearch"
+	                        class="control-input"
+	                        list="traitOptions"
+	                        placeholder="Search & add traits (press Enter)…"
+	                        disabled
+	                    >
+	                    <datalist id="traitOptions"></datalist>
+	                    <p class="control-hint" id="traitLimitHint"></p>
+	                </div>
+
+	                <div class="control-field">
+	                    <label class="control-label">◇ Name Style</label>
+	                    <select id="nameStyle" class="control-select" disabled>
+	                        <option value="">Optional</option>
+	                        <option value="eloquent">Eloquent</option>
+	                        <option value="harsh">Harsh</option>
+	                        <option value="noble">Noble</option>
+	                        <option value="mystic">Mystic</option>
+	                        <option value="street">Street</option>
+	                        <option value="corporate">Corporate</option>
+	                        <option value="comic">Comic</option>
+	                    </select>
+	                </div>
+
+	                <div class="control-checkbox">
+	                    <input type="checkbox" id="includeTitle" checked>
+	                    <label class="checkbox-label" for="includeTitle">◇ Allow Titles</label>
+	                </div>
+	                <div class="control-checkbox">
+	                    <input type="checkbox" id="allowEpithets">
+	                    <label class="checkbox-label" for="allowEpithets">◇ Allow Epithets</label>
+	                </div>
+
+	                <div class="control-field">
+	                    <label class="control-label">◇ Name Suggestions</label>
+	                    <div id="nameSuggestions" class="chip-row"></div>
+	                    <p class="control-hint">Click a suggestion to add it to Favorite Names.</p>
+	                </div>
+	            </div>
+
+            <!-- Custom Prompt -->
+            <div class="control-section">
+                <div class="section-header">
+                    <span class="section-icon">⬢</span>
+                    Custom Prompt
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Persona Prompt</label>
+                    <textarea id="promptPersona" class="control-input" placeholder="Describe the avatar's role, duties, or vibe"></textarea>
+                </div>
+	                <div class="control-field">
+	                    <label class="control-label">◇ Traits (comma separated)</label>
+	                    <input type="text" id="promptTraits" class="control-input" placeholder="Stoic, cunning, visionary">
+	                    <div id="promptTraitSuggestions" class="chip-row"></div>
+	                    <p class="control-hint">Click a suggestion to add it to the prompt.</p>
+	                </div>
+	                <div class="control-field">
+	                    <label class="control-label">◇ Skills / Duties</label>
+	                    <input type="text" id="promptSkills" class="control-input" placeholder="Storm weaving, oath keeping">
+	                    <div id="promptSkillSuggestions" class="chip-row"></div>
+	                    <p class="control-hint">Click a suggestion to add it to the prompt.</p>
+	                </div>
+	                <div class="control-field">
+	                    <label class="control-label">◇ Favorite Names</label>
+	                    <input type="text" id="promptNames" class="control-input" placeholder="Astra, Kael, Liora">
+                </div>
             </div>
-            <h1 class="temple-title">ORIPHEON</h1>
-            <p class="temple-subtitle">Divine Identity Engine</p>
-            <button class="sigil-button" onclick="enterForge()" style="max-width: 300px;">
-                <span>⬡ Enter The Forge ⬡</span>
-            </button>
+
+            <!-- Sigil Bloom -->
+            <div class="control-section">
+                <div class="section-header">
+                    <span class="section-icon">✶</span>
+                    Sigil Bloom Mode
+                </div>
+                <div class="control-checkbox">
+                    <input type="checkbox" id="sigilBloomToggle">
+                    <label class="checkbox-label" for="sigilBloomToggle">Weave glyphs & special characters into the name</label>
+                </div>
+                <div class="control-field">
+                    <label class="control-label">◇ Glyph Intensity</label>
+                    <div class="control-slider">
+                        <input type="range" id="sigilBloomIntensity" min="0" max="100" value="65">
+                        <span class="slider-value" id="sigilBloomIntensityValue">65% • Luminous Lattice</span>
+                    </div>
+                    <p class="control-hint">Adds triangles, crosses, ankhs, umlauts, and other sigils around the chosen name, scaling from subtle filigree to full ▲▲▲ sanctums.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn" onclick="generateAvatar()">
+                    ⬡ Forge Avatar
+                </button>
+                <button class="action-btn secondary" onclick="listAvatars()">
+                    ◈ Codex of Souls
+                </button>
+            </div>
         </div>
 
-        <!-- The Forge Interface (Hidden initially) -->
-        <div class="hidden" id="forgeInterface">
-            <!-- Chamber of Identity -->
-            <div class="divine-panel">
-                <h2 class="panel-header">
-                    <span class="panel-sigil">◈</span>
-                    Chamber of Identity
-                </h2>
-                <div class="ritual-grid">
-                    <div class="ritual-field">
-                        <label class="ritual-label">◇ Seed of Destiny</label>
-                        <input type="number" id="seed" class="ritual-input" placeholder="Leave empty for cosmic randomness">
-                    </div>
-                    <div class="ritual-field">
-                        <label class="ritual-label">◇ Gender Manifestation</label>
-                        <select id="gender" class="ritual-select">
-                            <option value="">Random</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="androgynous">Androgynous</option>
-                        </select>
-                    </div>
-                    <div class="ritual-field">
-                        <label class="ritual-label">◇ Name Architecture</label>
-                        <select id="nameMode" class="ritual-select">
-                            <option value="">Random</option>
-                            <option value="mononym">Mononym</option>
-                            <option value="fused_mononym">Fused Mononym</option>
-                            <option value="first_last">First & Last</option>
-                            <option value="first_middle_last">First, Middle & Last</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Divine Parameters -->
-            <div class="divine-panel">
-                <h2 class="panel-header">
-                    <span class="panel-sigil">◆</span>
-                    Divine Parameters
-                </h2>
-                <div class="ritual-grid">
-                    <div class="ritual-field">
-                        <label class="ritual-label">◇ Order of Being</label>
-                        <select id="order" class="ritual-select">
-                            <option value="">Random</option>
-                            <option value="angel">Angel</option>
-                            <option value="demon">Demon</option>
-                            <option value="jinn">Jinn</option>
-                            <option value="human">Human</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Forge Controls -->
-            <div class="ritual-grid" style="margin: 40px 0;">
-                <button class="sigil-button" onclick="generateAvatar()">
-                    <span>⬡ Forge Avatar ⬡</span>
-                </button>
-                <button class="sigil-button secondary" onclick="listAvatars()">
-                    <span>◈ Open Codex of Souls ◈</span>
-                </button>
-            </div>
-
-            <!-- The Holy Forge (Results) -->
-            <div class="divine-panel">
-                <h2 class="panel-header">
-                    <span class="panel-sigil">⬢</span>
-                    The Holy Forge
-                </h2>
-                <div class="forge-container" id="forgeResult">
-                    <div class="forge-loading">
-                        <div class="forge-spinner"></div>
-                        <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 14px;">Awaiting divine invocation...</p>
-                    </div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="forge-container" id="forgeResult">
+                <div class="forge-loading">
+                    <div class="forge-spinner"></div>
+                    <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 12px; opacity: 0.7;">
+                        Awaiting divine invocation...
+                    </p>
                 </div>
             </div>
         </div>
@@ -677,7 +871,7 @@
         // Generate particle field
         function createParticles() {
             const field = document.getElementById('particleField');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + '%';
@@ -687,39 +881,596 @@
             }
         }
 
-        function enterForge() {
-            document.getElementById('sigilGate').classList.add('hidden');
-            document.getElementById('forgeInterface').classList.remove('hidden');
+        let currentTab = 'overview';
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.dataset.tab === tabName);
+            });
         }
 
-        async function generateAvatar() {
-            const seed = document.getElementById('seed').value;
-            const gender = document.getElementById('gender').value;
-            const order = document.getElementById('order').value;
-            const nameMode = document.getElementById('nameMode').value;
+	        function parseListInput(value) {
+	            return value
+	                .split(/,|\n/)
+	                .map(entry => entry.trim())
+	                .filter(entry => entry.length > 0);
+	        }
+
+	        const PROMPT_SUGGESTIONS = {
+	            base: {
+	                traits: [
+	                    'Stoic',
+	                    'Cunning',
+	                    'Visionary',
+	                    'Merciful',
+	                    'Ruthless',
+	                    'Devout',
+	                    'Rebellious',
+	                    'Curious',
+	                    'Elegant',
+	                    'Haunted',
+	                    'Radiant',
+	                    'Playful',
+	                ],
+	                skills: [
+	                    'Storm weaving',
+	                    'Oath keeping',
+	                    'Ciphercraft',
+	                    'Ritual healing',
+	                    'Blade work',
+	                    'Archive diving',
+	                    'Bounty hunting',
+	                    'Forge craft',
+	                    'Dream reading',
+	                    'Negotiation',
+	                    'Songbinding',
+	                    'Cartography',
+	                ],
+	            },
+	            byOrder: {
+	                angel: {
+	                    traits: ['Oathbound', 'Vigilant', 'Radiant', 'Compassionate'],
+	                    skills: ['Sanctuary rites', 'Hymncraft', 'Judgement', 'Shield-bearing'],
+	                },
+	                demon: {
+	                    traits: ['Ambitious', 'Clever', 'Unforgiving', 'Tempting'],
+	                    skills: ['Pactwriting', 'Shadow bargaining', 'Bloodforging', 'Fearcraft'],
+	                },
+	                jinn: {
+	                    traits: ['Restless', 'Wry', 'Elusive', 'Proud'],
+	                    skills: ['Mirage craft', 'Windbinding', 'Ember couriering', 'Secret trading'],
+	                },
+	                human: {
+	                    traits: ['Stubborn', 'Pragmatic', 'Brave', 'Inventive'],
+	                    skills: ['Wayfinding', 'Tinkering', 'Field medicine', 'Diplomacy'],
+	                },
+	                titan: {
+	                    traits: ['Immovable', 'Ancient', 'Protective', 'Severe'],
+	                    skills: ['World-shaping', 'Oathstone carving', 'Mountainkeeping', 'Siege lore'],
+	                },
+	                fae: {
+	                    traits: ['Capricious', 'Graceful', 'Secretive', 'Charming'],
+	                    skills: ['Glamour', 'Moonweaving', 'Bargaining', 'Wild hunt riding'],
+	                },
+	                yokai: {
+	                    traits: ['Tricksy', 'Observant', 'Feral', 'Honorable'],
+	                    skills: ['Shapeshifting', 'Boundary warding', 'Spirit bargaining', 'Storm calling'],
+	                },
+	                elemental: {
+	                    traits: ['Unyielding', 'Volatile', 'Serene', 'Wild'],
+	                    skills: ['Flame warding', 'Tide calling', 'Wind whispering', 'Stone singing'],
+	                },
+	                nephilim: {
+	                    traits: ['Fierce', 'Burdened', 'Resolute', 'Protective'],
+	                    skills: ['Sky dueling', 'Giant-lore', 'Oath bearing', 'Mercy trials'],
+	                },
+	                archon: {
+	                    traits: ['Austere', 'Precise', 'Cold', 'Principled'],
+	                    skills: ['Lawweaving', 'Reality auditing', 'Sigil adjudication', 'Cosmic calculus'],
+	                },
+	                dragonkin: {
+	                    traits: ['Proud', 'Patient', 'Dominant', 'Wise'],
+	                    skills: ['Skyfire tactics', 'Hoard divination', 'Oathfire', 'Scale rites'],
+	                },
+	                construct: {
+	                    traits: ['Methodical', 'Loyal', 'Quiet', 'Unblinking'],
+	                    skills: ['Circuit hymn', 'Gearcraft', 'Memory warding', 'Axiom engraving'],
+	                },
+	                eldritch: {
+	                    traits: ['Uncanny', 'Detached', 'Intense', 'Prophetic'],
+	                    skills: ['Void listening', 'Dream walking', 'Horizon scrying', 'Sigil fracture'],
+	                },
+	                trickster: {
+	                    traits: ['Playful', 'Chaotic', 'Ironic', 'Unpredictable'],
+	                    skills: ['Prankcraft', 'Satire', 'Misdirection', 'Chaos rites'],
+	                },
+	            },
+	            byTarot: {
+	                magician: {
+	                    traits: ['Inventive', 'Precise', 'Bold'],
+	                    skills: ['Sigil calculus', 'Illusion weaving', 'Ritual engineering'],
+	                },
+	                high_priestess: {
+	                    traits: ['Oracular', 'Serene', 'Veil-touched'],
+	                    skills: ['Prophecy', 'Dream reading', 'Silent rites'],
+	                },
+	                hermit: {
+	                    traits: ['Patient', 'Quiet', 'Observant'],
+	                    skills: ['Pilgrimage', 'Hidden lore', 'Lantern rites'],
+	                },
+	                chariot: {
+	                    traits: ['Driven', 'Disciplined', 'Brave'],
+	                    skills: ['Command', 'Escort tactics', 'Ward riding'],
+	                },
+	                star: {
+	                    traits: ['Hopeful', 'Gentle', 'Bright'],
+	                    skills: ['Healing', 'Guidance', 'Omen reading'],
+	                },
+	                devil: {
+	                    traits: ['Tempting', 'Ambitious', 'Unflinching'],
+	                    skills: ['Pactbinding', 'Desirecraft', 'Chain lore'],
+	                },
+	            },
+	        };
+
+	        const sigilBloomToggle = document.getElementById('sigilBloomToggle');
+	        const sigilBloomIntensityInput = document.getElementById('sigilBloomIntensity');
+	        const sigilBloomIntensityLabel = document.getElementById('sigilBloomIntensityValue');
+	        const nameModeSelect = document.getElementById('nameMode');
+		        const nameLengthSlider = document.getElementById('nameLength');
+		        const nameLengthLabel = document.getElementById('nameLengthValue');
+		        const clashNamesToggle = document.getElementById('clashNamesToggle');
+		        const orderSelect = document.getElementById('order');
+		        const tarotPathSelect = document.getElementById('tarotPath');
+		        const archetypeSelect = document.getElementById('nameArchetype');
+		        const nameStyleSelect = document.getElementById('nameStyle');
+		        const allowEpithetsToggle = document.getElementById('allowEpithets');
+		        const includeTitleToggle = document.getElementById('includeTitle');
+	        const traitSearchInput = document.getElementById('traitSearch');
+	        const traitOptionsList = document.getElementById('traitOptions');
+	        const traitSuggestionsEl = document.getElementById('nameTraitSuggestions');
+		        const traitsSelectedEl = document.getElementById('nameTraitsSelected');
+		        const traitLimitHintEl = document.getElementById('traitLimitHint');
+		        const nameSuggestionsEl = document.getElementById('nameSuggestions');
+		        const promptTraitsInput = document.getElementById('promptTraits');
+		        const promptSkillsInput = document.getElementById('promptSkills');
+		        const promptTraitSuggestionsEl = document.getElementById('promptTraitSuggestions');
+		        const promptSkillSuggestionsEl = document.getElementById('promptSkillSuggestions');
+
+		        let nameData = null;
+		        let selectedNameTraits = [];
+		        let nameSuggestionRequestToken = 0;
+
+	        function normalizeId(value) {
+	            return (value || '').trim().toLowerCase().replace(/\s+/g, '_');
+	        }
+
+	        function findTraitId(input) {
+	            const raw = (input || '').trim();
+	            if (!raw || !nameData?.traits) return null;
+	            const direct = normalizeId(raw);
+	            if (nameData.traits[direct]) return direct;
+	            const byLabel = Object.entries(nameData.traits).find(([, meta]) => meta.label.toLowerCase() === raw.toLowerCase());
+	            return byLabel ? byLabel[0] : null;
+	        }
+
+		        function renderChips(container, chips, options = {}) {
+		            container.innerHTML = '';
+		            chips.forEach((chip) => {
+		                const button = document.createElement('button');
+	                button.type = 'button';
+	                button.className = `chip${options.secondary ? ' secondary' : ''}`;
+	                button.textContent = chip.label;
+	                if (typeof chip.onClick === 'function') {
+	                    button.addEventListener('click', chip.onClick);
+	                }
+		                container.appendChild(button);
+		            });
+		        }
+
+		        function normalizeSuggestion(value) {
+		            return (value || '').trim().toLowerCase();
+		        }
+
+		        function dedupeSuggestions(values) {
+		            const seen = new Set();
+		            const out = [];
+		            values.forEach((value) => {
+		                const key = normalizeSuggestion(value);
+		                if (!key) return;
+		                if (seen.has(key)) return;
+		                seen.add(key);
+		                out.push(value);
+		            });
+		            return out;
+		        }
+
+		        function addToListInput(inputEl, value) {
+		            if (!inputEl) return;
+		            const existing = parseListInput(inputEl.value);
+		            const existingKeys = new Set(existing.map((v) => normalizeSuggestion(v)));
+		            const key = normalizeSuggestion(value);
+		            if (!key || existingKeys.has(key)) return;
+		            existing.push(value);
+		            inputEl.value = existing.join(', ');
+		            inputEl.dispatchEvent(new Event('input'));
+		        }
+
+		        function renderPromptSuggestions() {
+		            const orderKey = orderSelect.value;
+		            const tarotKey = tarotPathSelect.value;
+		            const orderSuggestions = PROMPT_SUGGESTIONS.byOrder[orderKey] || { traits: [], skills: [] };
+		            const tarotSuggestions = PROMPT_SUGGESTIONS.byTarot[tarotKey] || { traits: [], skills: [] };
+
+		            const currentTraits = parseListInput(promptTraitsInput.value);
+		            const currentSkills = parseListInput(promptSkillsInput.value);
+		            const currentTraitKeys = new Set(currentTraits.map((v) => normalizeSuggestion(v)));
+		            const currentSkillKeys = new Set(currentSkills.map((v) => normalizeSuggestion(v)));
+
+		            const traitSuggestions = dedupeSuggestions([
+		                ...tarotSuggestions.traits,
+		                ...orderSuggestions.traits,
+		                ...PROMPT_SUGGESTIONS.base.traits,
+		            ]).filter((value) => !currentTraitKeys.has(normalizeSuggestion(value)));
+
+		            const skillSuggestions = dedupeSuggestions([
+		                ...tarotSuggestions.skills,
+		                ...orderSuggestions.skills,
+		                ...PROMPT_SUGGESTIONS.base.skills,
+		            ]).filter((value) => !currentSkillKeys.has(normalizeSuggestion(value)));
+
+		            renderChips(
+		                promptTraitSuggestionsEl,
+		                traitSuggestions.slice(0, 12).map((label) => ({
+		                    label,
+		                    onClick: () => {
+		                        addToListInput(promptTraitsInput, label);
+		                        renderPromptSuggestions();
+		                    },
+		                }))
+		            );
+
+		            renderChips(
+		                promptSkillSuggestionsEl,
+		                skillSuggestions.slice(0, 12).map((label) => ({
+		                    label,
+		                    onClick: () => {
+		                        addToListInput(promptSkillsInput, label);
+		                        renderPromptSuggestions();
+		                    },
+		                }))
+		            );
+		        }
+
+		        function updateTraitHint(message) {
+		            traitLimitHintEl.textContent = message || '';
+		        }
+
+	        function addTrait(traitId) {
+	            if (!nameData?.traits) return;
+	            const id = findTraitId(traitId);
+	            if (!id) return;
+	            if (selectedNameTraits.includes(id)) return;
+	            if (selectedNameTraits.length >= 3) {
+	                updateTraitHint('Max 3 traits selected.');
+	                return;
+	            }
+	            selectedNameTraits = [...selectedNameTraits, id];
+	            updateTraitHint('');
+	            renderSelectedTraits();
+	            refreshNameSuggestions();
+	        }
+
+	        function removeTrait(traitId) {
+	            selectedNameTraits = selectedNameTraits.filter((t) => t !== traitId);
+	            updateTraitHint('');
+	            renderSelectedTraits();
+	            refreshNameSuggestions();
+	        }
+
+	        function renderSelectedTraits() {
+	            if (!nameData?.traits) return;
+	            renderChips(
+	                traitsSelectedEl,
+	                selectedNameTraits.map((id) => ({
+	                    label: `${nameData.traits[id].label} ×`,
+	                    onClick: () => removeTrait(id),
+	                })),
+	                { secondary: true }
+	            );
+	        }
+
+	        function renderSuggestedTraits() {
+	            if (!nameData?.archetypes || !nameData?.traits) return;
+	            const archetypeId = archetypeSelect.value;
+	            const archetype = nameData.archetypes[archetypeId];
+	            const suggestions = archetype?.suggestedTraits || [];
+	            renderChips(
+	                traitSuggestionsEl,
+	                suggestions
+	                    .filter((id) => !selectedNameTraits.includes(id))
+	                    .map((id) => ({
+	                        label: nameData.traits[id]?.label || id,
+	                        onClick: () => addTrait(id),
+	                    }))
+	            );
+	        }
+
+	        function addNameToFavoriteNames(name) {
+	            const input = document.getElementById('promptNames');
+	            const existing = parseListInput(input.value);
+	            if (!existing.includes(name)) {
+	                existing.unshift(name);
+	            }
+	            input.value = existing.join(', ');
+	        }
+
+	        function renderNameSuggestions(names) {
+	            renderChips(
+	                nameSuggestionsEl,
+	                (names || []).map((name) => ({
+	                    label: name,
+	                    onClick: () => addNameToFavoriteNames(name),
+	                }))
+	            );
+	        }
+
+	        async function refreshNameSuggestions() {
+	            if (!nameData || !archetypeSelect.value) {
+	                renderNameSuggestions([]);
+	                return;
+	            }
+
+	            const seedRaw = document.getElementById('seed').value;
+	            const seed = seedRaw ? parseInt(seedRaw, 10) : undefined;
+	            const payload = {
+	                seed: Number.isFinite(seed) ? seed : undefined,
+	                archetype: archetypeSelect.value,
+	                nameMode: nameModeSelect.value || undefined,
+	                traits: selectedNameTraits,
+	                style: nameStyleSelect.value || undefined,
+	                allowTitles: includeTitleToggle.checked,
+	                allowEpithets: allowEpithetsToggle.checked,
+	            };
+
+	            const token = ++nameSuggestionRequestToken;
+	            try {
+	                const response = await fetch('http://localhost:3333/names/generate', {
+	                    method: 'POST',
+	                    headers: { 'Content-Type': 'application/json' },
+	                    body: JSON.stringify(payload)
+	                });
+	                if (!response.ok) return;
+	                const data = await response.json();
+	                if (token !== nameSuggestionRequestToken) return;
+	                renderNameSuggestions(data.names || []);
+	            } catch (_err) {
+	                // Ignore name suggestion errors; avatar generation still works.
+	            }
+	        }
+
+	        async function loadNameData() {
+	            try {
+	                const response = await fetch('http://localhost:3333/name-data');
+	                if (!response.ok) return;
+	                nameData = await response.json();
+
+	                // Populate archetypes
+	                const groups = {};
+	                Object.entries(nameData.archetypes || {}).forEach(([id, meta]) => {
+	                    const group = meta.group || 'Other';
+	                    if (!groups[group]) groups[group] = [];
+	                    groups[group].push({ id, label: meta.label });
+	                });
+	                archetypeSelect.innerHTML = '<option value="">Select...</option>';
+	                const groupOrder = [
+	                    'Soulslike / Dark Fantasy',
+	                    'Sci-fi / Space Opera',
+	                    'Urban Chaos / Gangster Sandbox',
+	                    'Mythic / Occult',
+	                    'Comedy / Internet',
+	                ];
+	                groupOrder.forEach((group) => {
+	                    const items = groups[group];
+	                    if (!items) return;
+	                    const optgroup = document.createElement('optgroup');
+	                    optgroup.label = group;
+	                    items
+	                        .sort((a, b) => a.label.localeCompare(b.label))
+	                        .forEach((entry) => {
+	                            const option = document.createElement('option');
+	                            option.value = entry.id;
+	                            option.textContent = entry.label;
+	                            optgroup.appendChild(option);
+	                        });
+	                    archetypeSelect.appendChild(optgroup);
+	                });
+	                Object.entries(groups)
+	                    .filter(([group]) => !groupOrder.includes(group))
+	                    .forEach(([group, items]) => {
+	                        const optgroup = document.createElement('optgroup');
+	                        optgroup.label = group;
+	                        items
+	                            .sort((a, b) => a.label.localeCompare(b.label))
+	                            .forEach((entry) => {
+	                                const option = document.createElement('option');
+	                                option.value = entry.id;
+	                                option.textContent = entry.label;
+	                                optgroup.appendChild(option);
+	                            });
+	                        archetypeSelect.appendChild(optgroup);
+	                    });
+
+	                // Populate trait datalist
+	                traitOptionsList.innerHTML = '';
+	                Object.entries(nameData.traits || {})
+	                    .sort((a, b) => a[1].label.localeCompare(b[1].label))
+	                    .forEach(([id, meta]) => {
+	                        const option = document.createElement('option');
+	                        option.value = id;
+	                        option.label = meta.label;
+	                        traitOptionsList.appendChild(option);
+	                    });
+
+	                archetypeSelect.disabled = false;
+	                traitSearchInput.disabled = false;
+	                nameStyleSelect.disabled = false;
+	            } catch (_err) {
+	                // If name-data isn't available, keep controls disabled.
+	            }
+	        }
+
+	        archetypeSelect.addEventListener('change', () => {
+	            renderSuggestedTraits();
+	            refreshNameSuggestions();
+	        });
+	        nameStyleSelect.addEventListener('change', refreshNameSuggestions);
+	        allowEpithetsToggle.addEventListener('change', refreshNameSuggestions);
+	        includeTitleToggle.addEventListener('change', refreshNameSuggestions);
+
+	        traitSearchInput.addEventListener('keydown', (event) => {
+	            if (event.key !== 'Enter') return;
+	            event.preventDefault();
+	            const value = traitSearchInput.value;
+	            traitSearchInput.value = '';
+	            addTrait(value);
+	        });
+
+		        document.getElementById('seed').addEventListener('input', () => {
+		            refreshNameSuggestions();
+		        });
+		        promptTraitsInput.addEventListener('input', renderPromptSuggestions);
+		        promptSkillsInput.addEventListener('input', renderPromptSuggestions);
+
+		        function describeSigilBloomLabel(value) {
+	            const normalized = value / 100;
+	            if (normalized < 0.33) return 'Ember Filigree';
+            if (normalized < 0.66) return 'Luminous Lattice';
+            return 'Cathedral Storm';
+        }
+
+        function updateSigilBloomControls() {
+            const currentValue = parseInt(sigilBloomIntensityInput.value, 10) || 0;
+            const descriptor = describeSigilBloomLabel(currentValue);
+            sigilBloomIntensityLabel.textContent = `${currentValue}% • ${descriptor}`;
+            const enabled = sigilBloomToggle.checked;
+            sigilBloomIntensityInput.disabled = !enabled;
+            sigilBloomIntensityLabel.classList.toggle('disabled', !enabled);
+        }
+
+        sigilBloomToggle.addEventListener('change', updateSigilBloomControls);
+        sigilBloomIntensityInput.addEventListener('input', updateSigilBloomControls);
+        updateSigilBloomControls();
+
+        function describeNameLength(value) {
+            if (value === 0) return 'Short Sigils';
+            if (value === 2) return 'Long Sigils';
+            return 'Dynamic';
+        }
+
+        function updateNameLengthLabel() {
+            const value = parseInt(nameLengthSlider.value, 10) || 0;
+            nameLengthLabel.textContent = describeNameLength(value);
+            nameLengthLabel.classList.toggle('disabled', nameLengthSlider.disabled);
+        }
+
+        function syncNameLengthControls() {
+            updateNameLengthLabel();
+        }
+
+        nameModeSelect.addEventListener('change', syncNameLengthControls);
+        nameLengthSlider.addEventListener('input', updateNameLengthLabel);
+	        orderSelect.addEventListener('change', () => {
+	            if (orderSelect.value === 'trickster') {
+	                clashNamesToggle.checked = true;
+	            }
+	            renderPromptSuggestions();
+	        });
+	        tarotPathSelect.addEventListener('change', renderPromptSuggestions);
+	        syncNameLengthControls();
+
+
+	        async function generateAvatar() {
+	            const seed = document.getElementById('seed').value;
+	            const gender = document.getElementById('gender').value;
+	            const order = orderSelect.value;
+	            const tarotPath = tarotPathSelect.value;
+	            const nameMode = nameModeSelect.value;
+		            const nameLengthValue = parseInt(nameLengthSlider.value, 10) || 0;
+		            const includeTitle = includeTitleToggle.checked;
+		            const promptPersona = document.getElementById('promptPersona').value.trim();
+	            const promptTraits = parseListInput(document.getElementById('promptTraits').value);
+	            const promptSkills = parseListInput(document.getElementById('promptSkills').value);
+	            const promptNames = parseListInput(document.getElementById('promptNames').value);
+	            const nameArchetype = archetypeSelect.value;
+	            const nameStyle = nameStyleSelect.value;
+	            const allowEpithets = allowEpithetsToggle.checked;
+	            const sigilBloomEnabled = sigilBloomToggle.checked;
+	            const sigilBloomIntensitySetting = parseInt(sigilBloomIntensityInput.value, 10) || 0;
 
             const body = {};
             if (seed) body.seed = parseInt(seed);
 
-            if (gender || nameMode) {
+            const lengthPreference = nameLengthValue === 0 ? 'short' : nameLengthValue === 2 ? 'long' : null;
+
+            const autoClash = order === 'trickster';
+            const clashNamesEnabled = autoClash || clashNamesToggle.checked;
+
+            if (gender || nameMode || lengthPreference || clashNamesEnabled || !includeTitle) {
                 body.identity = {};
                 if (gender) body.identity.gender = gender;
                 if (nameMode) {
                     body.identity.nameMode = nameMode;
-                    if (nameMode === 'mononym' || nameMode === 'fused_mononym') {
-                        body.identity.title = null;
-                    }
                 }
-            }
+                if (lengthPreference) {
+                    body.identity.lengthPreference = lengthPreference;
+                }
+	                if (clashNamesEnabled) {
+	                    body.identity.clashNames = true;
+	                }
+	                // Set title to null if checkbox is unchecked
+	                if (!includeTitle) {
+	                    body.identity.title = null;
+	                }
+	            }
 
-            if (order) {
-                body.being = { order };
+	            if (order || tarotPath) {
+	                body.being = {};
+	                if (order) body.being.order = order;
+	                if (tarotPath) body.being.tarotArchetype = tarotPath;
+	            }
+
+	            const prompt = {};
+	            if (promptPersona) prompt.personaDescription = promptPersona;
+	            if (promptTraits.length) prompt.desiredTraits = promptTraits;
+	            if (promptSkills.length) prompt.desiredSkills = promptSkills;
+	            if (promptNames.length) prompt.preferredNames = promptNames;
+	            if (nameArchetype) {
+	                prompt.nameArchetype = nameArchetype;
+	                if (selectedNameTraits.length) prompt.nameTraits = selectedNameTraits;
+	                if (nameStyle) prompt.nameStyle = nameStyle;
+	                if (allowEpithets) prompt.allowEpithets = true;
+	            }
+	            if (sigilBloomEnabled) {
+	                prompt.sigilBloom = {
+	                    enabled: true,
+	                    intensity: sigilBloomIntensitySetting
+                };
+            }
+            if (Object.keys(prompt).length > 0) {
+                body.prompt = prompt;
             }
 
             document.getElementById('forgeResult').innerHTML = `
                 <div class="forge-loading">
                     <div class="forge-spinner"></div>
-                    <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 14px;">Forging mythic essence...</p>
+                    <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 12px; opacity: 0.7;">
+                        Forging mythic essence...
+                    </p>
                 </div>
             `;
 
@@ -736,9 +1487,9 @@
                 displayAvatar(avatar);
             } catch (error) {
                 document.getElementById('forgeResult').innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--ultraviolet);">
-                        <p style="font-size: 18px; margin-bottom: 10px;">⚠ Ritual Disrupted</p>
-                        <p style="opacity: 0.7;">${error.message}</p>
+                    <div class="forge-loading">
+                        <p style="font-size: 16px; margin-bottom: 8px; color: var(--ultraviolet);">⚠ Ritual Disrupted</p>
+                        <p style="opacity: 0.6; font-size: 12px;">${error.message}</p>
                     </div>
                 `;
             }
@@ -748,7 +1499,9 @@
             document.getElementById('forgeResult').innerHTML = `
                 <div class="forge-loading">
                     <div class="forge-spinner"></div>
-                    <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 14px;">Accessing the codex...</p>
+                    <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 12px; opacity: 0.7;">
+                        Accessing the codex...
+                    </p>
                 </div>
             `;
 
@@ -760,9 +1513,9 @@
                 displayAvatarList(data.items);
             } catch (error) {
                 document.getElementById('forgeResult').innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--ultraviolet);">
-                        <p style="font-size: 18px; margin-bottom: 10px;">⚠ Codex Sealed</p>
-                        <p style="opacity: 0.7;">${error.message}</p>
+                    <div class="forge-loading">
+                        <p style="font-size: 16px; margin-bottom: 8px; color: var(--ultraviolet);">⚠ Codex Sealed</p>
+                        <p style="opacity: 0.6; font-size: 12px;">${error.message}</p>
                     </div>
                 `;
             }
@@ -784,72 +1537,145 @@
 
             const html = `
                 <div class="avatar-manifestation">
-                    <div class="avatar-name">⬡ ${title}${name} ⬡</div>
-                    <div class="avatar-title-text">${avatar.mythos.shortTitle}</div>
+                    <div class="avatar-header">
+                        <div class="avatar-name">⬡ ${title}${name} ⬡</div>
+                        <div class="avatar-title-text">${avatar.mythos.shortTitle}</div>
+                    </div>
 
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◈</span> Identity</h3>
-                        <div class="section-content">
-                            <p><strong>Name Meaning:</strong> <em>${avatar.identity.nameMeaning}</em></p>
-                            <p><strong>Gender:</strong> ${avatar.identity.gender}</p>
-                            <p><strong>Light Aspect:</strong> ${avatar.identity.pseudonyms.lightSide || 'None'}</p>
-                            <p><strong>Shadow Aspect:</strong> ${avatar.identity.pseudonyms.darkSide || 'None'}</p>
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+                        <button class="tab" data-tab="mythos" onclick="switchTab('mythos')">Mythos</button>
+                        <button class="tab" data-tab="profile" onclick="switchTab('profile')">Profile</button>
+                        <button class="tab" data-tab="export" onclick="switchTab('export')">Export</button>
+                    </div>
+
+                    <!-- Overview Tab -->
+                    <div class="tab-content active" data-tab="overview">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="card-title"><span>◈</span> Identity</div>
+                                <div class="card-content">
+                                    <p><strong>Meaning:</strong> <em>${avatar.identity.nameMeaning}</em></p>
+                                    <p><strong>Gender:</strong> ${avatar.identity.gender}</p>
+                                    <p><strong>Light:</strong> ${avatar.identity.pseudonyms.lightSide || 'None'}</p>
+                                    <p><strong>Shadow:</strong> ${avatar.identity.pseudonyms.darkSide || 'None'}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◆</span> Divine Nature</div>
+                                <div class="card-content">
+                                    <p><strong>Order:</strong> ${avatar.being.order}</p>
+                                    <p><strong>Office:</strong> ${avatar.being.office}</p>
+                                    <p><strong>Tarot:</strong> ${avatar.being.tarotArchetype.replace(/_/g, ' ')}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◇</span> Manifestation</div>
+                                <div class="card-content">
+                                    <p><strong>Age:</strong> ${avatar.appearance.ageAppearance}</p>
+                                    <p><strong>Style:</strong> ${avatar.appearance.presentation}</p>
+                                    <p><strong>Sigils:</strong> ${avatar.appearance.keyFeatures.join(', ')}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◈</span> Essence</div>
+                                <div class="card-content">
+                                    <p style="margin-bottom: 8px;">${avatar.personality.summary}</p>
+                                    <div>${avatar.personality.coreValues.map(v => `<span class="badge">${v}</span>`).join('')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◆</span> Divine Nature</h3>
-                        <div class="section-content">
-                            <p><strong>Order:</strong> ${avatar.being.order}</p>
-                            <p><strong>Office:</strong> ${avatar.being.office}</p>
-                            <p><strong>Tarot Archetype:</strong> ${avatar.being.tarotArchetype.replace(/_/g, ' ')}</p>
+                    <!-- Mythos Tab -->
+                    <div class="tab-content" data-tab="mythos">
+                        <div class="narrative-section">
+                            <div class="narrative-title">⬢ Origin Story</div>
+                            <div class="narrative-text">${avatar.mythos.originStory}</div>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="card-title"><span>⬢</span> Faction</div>
+                                <div class="card-content">
+                                    <p>${avatar.mythos.faction}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>⬢</span> Prophecy</div>
+                                <div class="card-content">
+                                    <p><em>${avatar.mythos.prophecyOrCurse}</em></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="narrative-section">
+                            <div class="narrative-title">⬢ Sacred Ritual</div>
+                            <div class="narrative-text">${avatar.mythos.signatureRitual}</div>
                         </div>
                     </div>
 
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◇</span> Manifestation</h3>
-                        <div class="section-content">
-                            <p><strong>Age:</strong> ${avatar.appearance.ageAppearance}</p>
-                            <p><strong>Presentation:</strong> ${avatar.appearance.presentation}</p>
-                            <p><strong>Sigils:</strong> ${avatar.appearance.keyFeatures.join(', ')}</p>
+                    <!-- Profile Tab -->
+                    <div class="tab-content" data-tab="profile">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="card-title"><span>◆</span> Music</div>
+                                <div class="card-content">
+                                    ${avatar.tasteProfile.music.map(m => `<span class="badge">${m}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◆</span> Fashion</div>
+                                <div class="card-content">
+                                    ${avatar.tasteProfile.fashion.map(f => `<span class="badge">${f}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◇</span> Desires</div>
+                                <div class="card-content">
+                                    <p>${avatar.tasteProfile.likes.join(', ')}</p>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="card-title"><span>◇</span> Aversions</div>
+                                <div class="card-content">
+                                    <p>${avatar.tasteProfile.dislikes.join(', ')}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◈</span> Essence</h3>
-                        <div class="section-content">
-                            <p>${avatar.personality.summary}</p>
-                            <p><strong>Core Values:</strong></p>
-                            <div>${avatar.personality.coreValues.map(v => `<span class="badge">${v}</span>`).join('')}</div>
+                    <!-- Export Tab -->
+                    <div class="tab-content" data-tab="export">
+                        <div class="narrative-section">
+                            <div class="narrative-title">◇ Export Channels</div>
+                            <p style="color: var(--chromium); font-size: 12px; margin-bottom: 15px; opacity: 0.7;">
+                                Export this avatar to AI conversational platforms
+                            </p>
+                            <div class="export-section">
+                                <button class="export-btn" onclick="exportTo('${avatar.id}', 'inworld')">⬡ Inworld</button>
+                                <button class="export-btn" onclick="exportTo('${avatar.id}', 'convai')">⬡ Convai</button>
+                                <button class="export-btn" onclick="exportTo('${avatar.id}', 'charisma')">⬡ Charisma</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">⬢</span> Mythos</h3>
-                        <div class="section-content">
-                            <p>${avatar.mythos.originStory}</p>
-                            <p><strong>Faction:</strong> ${avatar.mythos.faction}</p>
-                            <p><strong>Prophecy:</strong> <em>${avatar.mythos.prophecyOrCurse}</em></p>
-                            <p><strong>Sacred Ritual:</strong> ${avatar.mythos.signatureRitual}</p>
-                        </div>
-                    </div>
-
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◆</span> Tastes & Affinities</h3>
-                        <div class="section-content">
-                            <p><strong>Music:</strong> ${avatar.tasteProfile.music.join(', ')}</p>
-                            <p><strong>Fashion:</strong> ${avatar.tasteProfile.fashion.join(', ')}</p>
-                            <p><strong>Desires:</strong> ${avatar.tasteProfile.likes.join(', ')}</p>
-                            <p><strong>Aversions:</strong> ${avatar.tasteProfile.dislikes.join(', ')}</p>
-                        </div>
-                    </div>
-
-                    <div class="avatar-section">
-                        <h3 class="section-title"><span class="section-icon">◇</span> Export Channels</h3>
-                        <div class="export-grid">
-                            <button class="export-button" onclick="exportTo('${avatar.id}', 'inworld')">⬡ Inworld</button>
-                            <button class="export-button" onclick="exportTo('${avatar.id}', 'convai')">⬡ Convai</button>
-                            <button class="export-button" onclick="exportTo('${avatar.id}', 'charisma')">⬡ Charisma</button>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="card-title"><span>◈</span> Metadata</div>
+                                <div class="card-content">
+                                    <p><strong>ID:</strong> ${avatar.id.substring(0, 8)}...</p>
+                                    <p><strong>Seed:</strong> ${avatar.seed}</p>
+                                    <p><strong>Created:</strong> ${new Date(avatar.createdAt).toLocaleString()}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -862,17 +1688,21 @@
             if (avatars.length === 0) {
                 document.getElementById('forgeResult').innerHTML = `
                     <div class="forge-loading">
-                        <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 14px;">The codex is empty. Forge a soul first.</p>
+                        <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 12px; opacity: 0.7;">
+                            The codex is empty. Forge a soul first.
+                        </p>
                     </div>
                 `;
                 return;
             }
 
             const html = `
-                <h3 style="color: var(--gold); margin-bottom: 20px; font-size: 20px; letter-spacing: 3px; text-transform: uppercase;">
-                    ◈ Codex of Souls ◈
-                </h3>
-                <div class="soul-grid">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--gold); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px;">
+                        ◈ Codex of Souls ◈
+                    </h3>
+                </div>
+                <div class="codex-grid">
                     ${avatars.map(avatar => {
                         let name = '';
                         if (avatar.identity.primaryName.mononym) {
@@ -905,7 +1735,7 @@
             document.getElementById('forgeResult').innerHTML = html;
         }
 
-        async function exportTo(id, platform) {
+	        async function exportTo(id, platform) {
             try {
                 const response = await fetch(`http://localhost:3333/avatars/${id}/${platform}`);
                 if (!response.ok) throw new Error('Export ritual failed');
@@ -923,8 +1753,10 @@
             }
         }
 
-        // Initialize
-        createParticles();
-    </script>
-</body>
-</html>
+	        // Initialize
+	        createParticles();
+	        loadNameData();
+	        renderPromptSuggestions();
+	    </script>
+	</body>
+	</html>

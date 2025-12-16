@@ -57,17 +57,30 @@ export class AvatarService {
     seed: number,
     params: AvatarGenerationParams
   ): AvatarCore {
-    const randomizer = Randomizer.fromSeed(seed, this.nameGenerator);
+    const randomizer = Randomizer.fromSeed(seed, this.nameGenerator, params.prompt);
     const heritage = params.heritage ?? randomizer.randomHeritage();
-    let identity = randomizer.randomIdentity(
-      heritage,
-      params.identity,
-      params.needPseudonyms ?? true
-    );
     const being = randomizer.randomBeing(params.being ?? {});
 
+    // Generate identity with order-aligned names
+    const identityResult = randomizer.randomIdentity(
+      heritage,
+      params.identity,
+      params.needPseudonyms ?? true,
+      being.order,
+      being.tarotArchetype
+    );
+    let identity = identityResult.identity;
+
     // Generate name meaning after we have heritage and being
-    const nameMeaning = randomizer.generateNameMeaning(heritage, being);
+    const nameMeaning = randomizer.generateNameMeaning(
+      identity.primaryName,
+      heritage,
+      being,
+      {
+        basePrimaryName: identityResult.basePrimaryName,
+        stylization: identityResult.stylization,
+      }
+    );
     identity = { ...identity, nameMeaning };
 
     const appearance = randomizer.randomAppearance();

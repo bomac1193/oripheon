@@ -6,7 +6,10 @@ A powerful backend API and web interface for generating mythic AI avatars with r
 
 - 🎭 **Mythic Avatar Generation** - Create unique characters with deep personalities, heritage, and mythos
 - 🌍 **Multi-Cultural Heritage** - Support for Yoruba, Igbo, Arabic, Celtic, Norse, and European lineages
-- 👤 **Four Orders** - Angels, Demons, Jinn, and Humans with unique offices and roles
+- 👤 **Thirteen Orders** - Angels, Demons, Jinn, Humans, Titans, Fae, Yokai, Elementals, Nephilim, Archons, Dragonkin, Constructs, and Eldritch entities with unique offices and roles
+- 🧠 **Guided Prompts** - Describe traits, duties, and favorite names to steer each avatar's identity
+- ✨ **Name Forge (Office Box)** - Archetype → Traits (max 3) → Name Style, with optional Titles/Epithets and aesthetic scoring
+- 📜 **Accurate Name Meanings** - Each chosen name resolves to a sourced etymology or mythic epithet, never a random phrase
 - 🃏 **Tarot Archetypes** - 22 Major Arcana archetypes for personality depth
 - 🎨 **Beautiful Web Interface** - Modern, responsive UI for easy avatar generation
 - 💾 **SQLite Database** - Automatic persistence of all generated avatars
@@ -58,6 +61,10 @@ npm start
 ### Health Check
 - `GET /health` - Server status
 
+### Name Generation
+- `GET /name-data` - Archetypes + trait metadata for the UI
+- `POST /names/generate` - Generate top 10 names (seeded + aesthetic scoring)
+
 ### Avatar Management
 - `POST /avatars/generate` - Generate new avatar
 - `GET /avatars` - List all avatars (query: ?limit=N&offset=N)
@@ -88,6 +95,51 @@ fetch('http://localhost:3333/avatars/generate', {
 }).then(r => r.json()).then(console.log)
 ```
 
+### Prompt Customization
+
+Supply a `prompt` object to steer traits, duties, and preferred names:
+
+```javascript
+fetch('http://localhost:3333/avatars/generate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    prompt: {
+      personaDescription: 'Solar tactician guarding nomad convoys',
+      desiredTraits: ['Stoic', 'Strategic'],
+      desiredSkills: ['Storm weaving', 'Battlefield medicine'],
+      preferredNames: ['Astra', 'Kael'],
+
+      // Name Forge (game-genre inspired, but original output)
+      nameArchetype: 'ashen_seer',
+      nameTraits: ['prophet', 'archivist'],
+      nameStyle: 'eloquent',
+      allowEpithets: true
+    }
+  })
+}).then(r => r.json()).then(console.log)
+```
+
+Prompt fields:
+- `personaDescription` – freeform sentence describing vibe or mission
+- `desiredTraits` – array of adjectives or values to prioritize
+- `desiredSkills` – array of duties or abilities to weave into mythos
+- `preferredNames` – list of names to either use directly or match with the closest database entry
+- `nameArchetype` – name-generation archetype (enables the Name Forge pipeline)
+- `nameTraits` – up to 3 trait ids (e.g. `prophet`, `blacksmith`, `memelord`)
+- `nameStyle` – optional style (`eloquent`, `harsh`, `noble`, `mystic`, `street`, `corporate`, `comic`)
+- `allowEpithets` – whether to append epithets like “the Far‑Seeing” / “of Ash”
+
+## Screenshots
+
+![Office box: Archetype → Traits → Style](docs/screenshots/office-box.png)
+
+![Name suggestions + selection](docs/screenshots/name-suggestions.png)
+
+## Notes
+
+The Name Forge is **game-genre inspired** (dark fantasy / space opera / urban chaos / occult / internet-comedy vibes), but it only produces **original** names and text.
+
 ### Generate Avatar via CLI
 
 ```bash
@@ -108,7 +160,7 @@ npm run cli -- list --limit=5
 - Six cultures: Yoruba, Igbo, Arabic, Celtic, Norse, European
 
 ### Being
-- Order: Angel, Demon, Jinn, Human
+- Order: Angel, Demon, Jinn, Human, Titan, Fae, Yokai, Elemental, Nephilim, Archon, Dragonkin, Construct, Eldritch
 - Office: Unique role within the order
 - Tarot Archetype: One of 22 Major Arcana
 

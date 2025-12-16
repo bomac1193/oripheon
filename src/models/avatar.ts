@@ -20,7 +20,21 @@ export interface Heritage {
   components: HeritageComponent[];
 }
 
-export type OrderType = "angel" | "demon" | "jinn" | "human";
+export type OrderType =
+  | "angel"
+  | "demon"
+  | "jinn"
+  | "human"
+  | "titan"
+  | "fae"
+  | "yokai"
+  | "elemental"
+  | "nephilim"
+  | "archon"
+  | "dragonkin"
+  | "construct"
+  | "eldritch"
+  | "trickster";
 
 export type TarotArchetype =
   | "fool"
@@ -67,6 +81,23 @@ export interface Identity {
   pseudonyms: Pseudonyms;
   gender: Gender;
   nameMeaning: string;
+}
+
+export interface AvatarPrompt {
+  personaDescription?: string;
+  desiredTraits?: string[];
+  desiredSkills?: string[];
+  preferredNames?: string[];
+  nameArchetype?: string;
+  nameTraits?: string[];
+  nameStyle?: string;
+  allowEpithets?: boolean;
+  sigilBloom?: SigilBloomOptions;
+}
+
+export interface SigilBloomOptions {
+  enabled: boolean;
+  intensity: number; // 0 - 100 as provided by the UI slider
 }
 
 export interface Being {
@@ -129,9 +160,12 @@ export interface AvatarGenerationParams {
     title?: string | null;
     nameMode?: NameMode;
     gender?: Gender;
+    lengthPreference?: "short" | "long";
+    clashNames?: boolean;
   };
   heritage?: Heritage;
   being?: Partial<Being>;
   needPseudonyms?: boolean;
   locks?: string[];
+  prompt?: AvatarPrompt;
 }
